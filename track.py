@@ -45,6 +45,7 @@ def read_waypoints(filename):
 
 if __name__ == '__main__':
     videoFile = ''
+    globalStart = time.time()
 
     if len(sys.argv) < 2:
         print("Usage: {} input file name".format(sys.argv[0]))
@@ -56,19 +57,18 @@ if __name__ == '__main__':
 
     waypoints = read_waypoints(videoFile)
 
-    index = 0
     browser = webdriver.Firefox()
 
-    for x in waypoints:
+    for index in range(len(waypoints)):
+        startProcessing = time.time()
         pngFile = os.path.join('frames', 'frame{}.png'.format(index))
         htmlFile = draw_map_save_html(waypoints, index)
         browser.get('file://{}'.format(htmlFile))
         time.sleep(1)
         browser.save_screenshot(pngFile)
-        print('{} - saved'.format(pngFile))
+        print('{} - processed in {:.2f} sec'.format(pngFile, (time.time() - startProcessing)))
         os.remove(htmlFile)
-        index += 1
 
     browser.quit()
 
-    print("Processing of {} is finished".format(videoFile))
+    print("Processing of {} is finished in {:.2f} sec".format(videoFile, (time.time() - globalStart)))
