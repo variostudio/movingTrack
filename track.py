@@ -42,6 +42,7 @@ if __name__ == '__main__':
 
     result = subprocess.Popen(["exiftool", "-ee", "-n", "-p", "$gpslatitude,$gpslongitude", videoFile],
                               stdout=subprocess.PIPE)
+
     for line in io.TextIOWrapper(result.stdout, encoding="utf-8"):
         coord_line = line.strip().split(",")
         waypoints.append([float(coord_line[0]), float(coord_line[1])])
@@ -53,14 +54,13 @@ if __name__ == '__main__':
     browser = webdriver.Firefox()
 
     for x in waypoints:
-        pngFile = 'frame' + str(index) + '.png'
+        pngFile = os.path.join('screens', 'frame' + str(index) + '.png')
         htmlFile = draw_save_map(waypoints, index)
         browser.get('file://' + htmlFile)
         time.sleep(1)
-        finalFile = os.path.join('screens', pngFile)
-        browser.save_screenshot(finalFile)
-        index = index + 1
-        print(finalFile + ' - saved')
+        browser.save_screenshot(pngFile)
+        print(pngFile + ' - saved')
+        index += 1
 
     browser.quit()
 
