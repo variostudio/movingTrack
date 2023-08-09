@@ -22,7 +22,7 @@ def draw_map_save_html(points, idx):
 
     folium.CircleMarker(location=points[idx], radius=7, color="blue", fill_color='yellow').add_to(track_layer)
 
-    html_file = os.path.join('htmls', 'frame' + str(idx) + '.html')
+    html_file = 'rendered.html'
 
     base_map.save(html_file)
     return os.path.abspath(html_file)
@@ -60,12 +60,13 @@ if __name__ == '__main__':
     browser = webdriver.Firefox()
 
     for x in waypoints:
-        pngFile = os.path.join('screens', 'frame' + str(index) + '.png')
+        pngFile = os.path.join('frames', 'frame{}.png'.format(index))
         htmlFile = draw_map_save_html(waypoints, index)
-        browser.get('file://' + htmlFile)
+        browser.get('file://{}'.format(htmlFile))
         time.sleep(1)
         browser.save_screenshot(pngFile)
         print('{} - saved'.format(pngFile))
+        os.remove(htmlFile)
         index += 1
 
     browser.quit()
