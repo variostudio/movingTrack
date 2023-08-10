@@ -71,7 +71,7 @@ if __name__ == '__main__':
 
     for index in range(len(waypoints)):
         startProcessing = time.time()
-        pngFile = os.path.join(outputDir, 'frame{}.png'.format(index))
+        pngFile = os.path.join(outputDir, 'frame{:04d}.png'.format(index))
         htmlFile = draw_map_save_html(waypoints, index)
         browser.get('file://{}'.format(htmlFile))
         time.sleep(1)
