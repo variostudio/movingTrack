@@ -12,6 +12,14 @@ import os
 import sys
 
 
+def create_output_dir():
+    output = 'output'
+    if not(os.path.exists(output)):
+        os.makedirs(output)
+
+    return output
+
+
 def draw_map_save_html(points, idx):
     base_map = folium.Map(points[idx], zoom_start=15)
     track_layer = folium.FeatureGroup(name='Track')
@@ -55,18 +63,20 @@ if __name__ == '__main__':
         videoFile = sys.argv[1]
         print("Processing file: {}".format(videoFile))
 
+    outputDir = create_output_dir()
+
     waypoints = read_waypoints(videoFile)
 
     browser = webdriver.Firefox()
 
     for index in range(len(waypoints)):
         startProcessing = time.time()
-        pngFile = os.path.join('frames', 'frame{}.png'.format(index))
+        pngFile = os.path.join(outputDir, 'frame{}.png'.format(index))
         htmlFile = draw_map_save_html(waypoints, index)
         browser.get('file://{}'.format(htmlFile))
         time.sleep(1)
         browser.save_screenshot(pngFile)
-        print('{} - processed in {:.2f} sec'.format(pngFile, (time.time() - startProcessing)))
+        print('{} - processed in {:.2f} sec'.format(os.path.abspath(pngFile), (time.time() - startProcessing)))
         os.remove(htmlFile)
 
     browser.quit()
